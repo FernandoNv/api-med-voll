@@ -1,0 +1,1 @@
+alter table pacientes add ativo bool not null default true;

@@ -1,0 +1,1 @@
+alter table medicos add ativo bool not null default true;
