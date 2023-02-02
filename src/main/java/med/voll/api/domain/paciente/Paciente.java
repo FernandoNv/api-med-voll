@@ -1,9 +1,6 @@
-package med.voll.api.medico;
-
+package med.voll.api.domain.paciente;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,17 +8,16 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import med.voll.api.endereco.Endereco;
-import org.hibernate.Hibernate;
+import med.voll.api.domain.endereco.Endereco;
 
 import java.util.Objects;
 
-@Table(name = "medicos")
-@Entity(name = "Medico")
+@Entity(name = "Paciente")
+@Table(name = "pacientes")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Medico {
+public class Paciente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,48 +25,46 @@ public class Medico {
 
     private String nome;
     private String email;
-    private String crm;
     private String telefone;
+    private String cpf;
 
     private Boolean ativo;
 
-    @Enumerated(EnumType.STRING)
-    private Especialidade especialidade;
-
     @Embedded
-    private Endereco endereco;
+    Endereco endereco;
 
-    public Medico(DadosCadastroMedico dados) {
+    public Paciente(DadosCadastroPaciente dados) {
         this.ativo = true;
         this.nome = dados.nome();
+        this.cpf = dados.cpf();
         this.email = dados.email();
-        this.endereco = new Endereco(dados.endereco());
-        this.crm = dados.crm();
-        this.especialidade = dados.especialidade();
         this.telefone = dados.telefone();
+        this.endereco = new Endereco(dados.endereco());
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Medico medico = (Medico) o;
-        return id != null && Objects.equals(id, medico.id);
+        if (o == null || getClass() != o.getClass()) return false;
+        Paciente paciente = (Paciente) o;
+        return Objects.equals(id, paciente.id);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(id);
     }
 
-    public void atualizarInformacoes(DadosAtualizacaoMedico dados) {
-        if (dados.nome() != null) {
+    public void atualizarInformacoes(DadosAtualizacaoPaciente dados) {
+        if(dados.nome() != null){
             this.nome = dados.nome();
         }
-        if (dados.telefone() != null) {
+
+        if(dados.telefone() != null){
             this.telefone = dados.telefone();
         }
-        if (dados.endereco() != null) {
+
+        if(dados.endereco() != null){
             this.endereco.atualizarInformacoes(dados.endereco());
         }
     }

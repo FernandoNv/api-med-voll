@@ -1,14 +1,17 @@
 package med.voll.api.controller;
 
 import jakarta.validation.Valid;
-import med.voll.api.paciente.DadosAtualizacaoPaciente;
-import med.voll.api.paciente.DadosCadastroPaciente;
-import med.voll.api.paciente.DadosListagemPaciente;
+import med.voll.api.domain.paciente.DadosAtualizacaoPaciente;
+import med.voll.api.domain.paciente.DadosCadastroPaciente;
+import med.voll.api.domain.paciente.DadosDetalhamentoPaciente;
+import med.voll.api.domain.paciente.DadosListagemPaciente;
+import med.voll.api.domain.paciente.Paciente;
 import med.voll.api.service.PacienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,11 +20,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("api/v1/pacientes")
 public class PacienteController {
-    private PacienteService _pacienteService;
+    private final PacienteService _pacienteService;
 
     @Autowired
     public PacienteController(PacienteService _pacienteService) {
@@ -29,22 +35,41 @@ public class PacienteController {
     }
 
     @PostMapping
-    public void cadastrar(@RequestBody @Valid DadosCadastroPaciente dados){
-        this._pacienteService.cadastrar(dados);
+    public ResponseEntity<DadosDetalhamentoPaciente> cadastrar(@RequestBody @Valid DadosCadastroPaciente dados, UriComponentsBuilder uriComponentsBuilder){
+        Paciente paciente = this._pacienteService.cadastrar(dados);
+        URI uri = uriComponentsBuilder
+                .path("/pacientes/{id}")
+                .buildAndExpand(paciente.getId())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(new DadosDetalhamentoPaciente(paciente));
     }
 
     @GetMapping
-    public Page<DadosListagemPaciente> listar(@PageableDefault(sort = {"nome"}, size = 10, page = 0) Pageable paginacao){
-        return this._pacienteService.listar(paginacao);
+    public ResponseEntity<Page<DadosListagemPaciente>> listar(@PageableDefault(sort = {"nome"}, size = 10, page = 0) Pageable paginacao){
+        Page<DadosListagemPaciente> page = this._pacienteService.listar(paginacao);
+
+        return ResponseEntity.ok(page);
     }
 
     @PutMapping
-    public void atualizar(@RequestBody @Valid DadosAtualizacaoPaciente dados){
-        this._pacienteService.atualizarInformacoes(dados);
+    public ResponseEntity<DadosDetalhamentoPaciente> atualizar(@RequestBody @Valid DadosAtualizacaoPaciente dados){
+        Paciente paciente = this._pacienteService.atualizarInformacoes(dados);
+
+        return ResponseEntity.ok(new DadosDetalhamentoPaciente(paciente));
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id){
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
         this._pacienteService.deletar(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DadosDetalhamentoPaciente> detalhar(@PathVariable Long id){
+        Paciente paciente = _pacienteService.detalhar(id);
+
+        return ResponseEntity.ok(new DadosDetalhamentoPaciente(paciente));
     }
 }

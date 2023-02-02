@@ -1,10 +1,11 @@
 package med.voll.api.service;
 
-import med.voll.api.medico.DadosAtualizacaoMedico;
-import med.voll.api.medico.DadosCadastroMedico;
-import med.voll.api.medico.DadosListagemMedico;
-import med.voll.api.medico.Medico;
-import med.voll.api.medico.MedicoRepository;
+import med.voll.api.domain.medico.DadosAtualizacaoMedico;
+import med.voll.api.domain.medico.DadosCadastroMedico;
+import med.voll.api.domain.medico.DadosListagemMedico;
+import med.voll.api.domain.medico.Medico;
+import med.voll.api.domain.medico.MedicoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,21 +13,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MedicoService {
-    private MedicoRepository _medicoRepository;
+    private final MedicoRepository _medicoRepository;
 
+    @Autowired
     public MedicoService(MedicoRepository _medicoRepository) {
         this._medicoRepository = _medicoRepository;
     }
 
     @Transactional
-    public void cadastrar(DadosCadastroMedico dados){
-        this._medicoRepository.save(new Medico(dados));
+    public Medico cadastrar(DadosCadastroMedico dados){
+        return this._medicoRepository.save(new Medico(dados));
     }
 
     @Transactional
-    public void atualizarInformacoes(DadosAtualizacaoMedico dados){
+    public Medico atualizarInformacoes(DadosAtualizacaoMedico dados){
         Medico medico = this._medicoRepository.getReferenceById(dados.id());
         medico.atualizarInformacoes(dados);
+
+        return medico;
     }
 
     public Page<DadosListagemMedico> listar(Pageable paginacao){
@@ -41,5 +45,9 @@ public class MedicoService {
 
         Medico medico = _medicoRepository.getReferenceById(id);
         medico.deletar();
+    }
+
+    public Medico detalhar(Long id){
+        return this._medicoRepository.getReferenceById(id);
     }
 }

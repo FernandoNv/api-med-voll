@@ -1,4 +1,4 @@
-package med.voll.api.endereco;
+package med.voll.api.domain.endereco;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -16,5 +16,7 @@ public record DadosEndereco(
         @NotBlank
         String uf,
         String complemento,
-        String numero) {
+        String numero
+) {
+
 }
