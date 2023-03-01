@@ -1,5 +1,6 @@
 package med.voll.api.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import med.voll.api.domain.medico.DadosAtualizacaoMedico;
 import med.voll.api.domain.medico.DadosCadastroMedico;
@@ -26,6 +27,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("api/v1/medicos")
+@SecurityRequirement(name = "bearer-key")
 public class MedicoController {
     private final MedicoService _medicoService;
 
