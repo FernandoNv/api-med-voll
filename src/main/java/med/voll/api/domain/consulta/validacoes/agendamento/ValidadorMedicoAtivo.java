@@ -1,4 +1,4 @@
-package med.voll.api.domain.consulta.validacoes;
+package med.voll.api.domain.consulta.validacoes.agendamento;
 
 import med.voll.api.domain.ValidacaoException;
 import med.voll.api.domain.consulta.DadosAgendamentoConsulta;
@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ValidadorMedicoAtivo implements ValidadorAgendamentoConsulta {
-    private final MedicoRepository medicoRepository;
+    private final MedicoRepository _medicoRepository;
 
     @Autowired
     public ValidadorMedicoAtivo(MedicoRepository medicoRepository) {
-        this.medicoRepository = medicoRepository;
+        _medicoRepository = medicoRepository;
     }
 
     @Override
@@ -22,7 +22,7 @@ public class ValidadorMedicoAtivo implements ValidadorAgendamentoConsulta {
             return;
         }
 
-        var medicoEstaAtivo = medicoRepository.findAtivoById(dados.idMedico());
+        var medicoEstaAtivo = _medicoRepository.findAtivoById(dados.idMedico());
         if(!medicoEstaAtivo){
             throw new ValidacaoException("Consulta não pode ser agendad com médico inativo");
         }

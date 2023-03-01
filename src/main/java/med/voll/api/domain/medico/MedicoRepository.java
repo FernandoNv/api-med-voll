@@ -13,12 +13,13 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
     @Query(value = """
     SELECT m FROM Medico m
     WHERE
-        m.ativo = true AND
+        m.ativo = TRUE AND
         m.especialidade = :especialidade AND
         m.id NOT IN(
             SELECT c.medico.id FROM Consulta c
             WHERE
-            c.data = :data
+            c.data = :data AND
+            c.motivoCancelamento is NULL
     )
     ORDER BY RANDOM()
     LIMIT 1

@@ -1,4 +1,4 @@
-package med.voll.api.domain.consulta.validacoes;
+package med.voll.api.domain.consulta.validacoes.agendamento;
 
 import med.voll.api.domain.ValidacaoException;
 import med.voll.api.domain.consulta.DadosAgendamentoConsulta;
@@ -8,16 +8,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ValidadorPacienteAtivo implements ValidadorAgendamentoConsulta {
-    private final PacienteRepository pacienteRepository;
+    private final PacienteRepository _pacienteRepository;
 
     @Autowired
     public ValidadorPacienteAtivo(PacienteRepository pacienteRepository) {
-        this.pacienteRepository = pacienteRepository;
+        _pacienteRepository = pacienteRepository;
     }
 
     @Override
     public void validar(DadosAgendamentoConsulta dados) {
-        var pacienteAtivo = pacienteRepository.findAtivoById(dados.idPaciente());
+        var pacienteAtivo = _pacienteRepository.findAtivoById(dados.idPaciente());
         if (!pacienteAtivo){
             throw new ValidacaoException("Consulta não pode ser agendada com paciente excluído");
         }
