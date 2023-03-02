@@ -12,13 +12,10 @@ import java.time.LocalDateTime;
 @Component
 public class ValidadorCancelamentoAntecedencia implements ValidadorCancelamentoConsulta {
     private final ConsultaRepository _consultaRepository;
-
     @Autowired
     public ValidadorCancelamentoAntecedencia(ConsultaRepository consultaRepository) {
         _consultaRepository = consultaRepository;
     }
-
-
     @Override
     public void validar(DadosCancelamentoConsulta dados) {
         var consulta = _consultaRepository.getReferenceById(dados.idConsulta());

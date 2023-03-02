@@ -68,7 +68,7 @@ public class ConsultaService {
     }
 
     @Transactional
-    public void cancelamentoConsulta(DadosCancelamentoConsulta dados) {
+    public Consulta cancelamentoConsulta(DadosCancelamentoConsulta dados) {
         if(!_consultaRepository.existsById(dados.idConsulta()))
             throw new ValidacaoException("Id da consulta inválido");
 
@@ -78,5 +78,7 @@ public class ConsultaService {
 
         var consulta = _consultaRepository.findById(dados.idConsulta()).get();
         consulta.cancelar(dados.motivoCancelamento());
+
+        return consulta;
     }
 }

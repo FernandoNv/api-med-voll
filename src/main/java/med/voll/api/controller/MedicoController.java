@@ -6,7 +6,6 @@ import med.voll.api.domain.medico.DadosAtualizacaoMedico;
 import med.voll.api.domain.medico.DadosCadastroMedico;
 import med.voll.api.domain.medico.DadosDetalhamentoMedico;
 import med.voll.api.domain.medico.DadosListagemMedico;
-import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,13 +37,13 @@ public class MedicoController {
 
     @PostMapping
     public ResponseEntity<DadosDetalhamentoMedico> cadastrar(@RequestBody @Valid DadosCadastroMedico dados, UriComponentsBuilder uriComponentsBuilder){
-        Medico medico = this._medicoService.cadastrar(dados);
+        DadosDetalhamentoMedico medico = this._medicoService.cadastrar(dados);
         URI uri = uriComponentsBuilder
                 .path("/medicos/{id}")
-                .buildAndExpand(medico.getId())
+                .buildAndExpand(medico.id())
                 .toUri();
 
-        return ResponseEntity.created(uri).body(new DadosDetalhamentoMedico(medico));
+        return ResponseEntity.created(uri).body(medico);
     }
 
     @GetMapping
@@ -56,16 +55,16 @@ public class MedicoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DadosDetalhamentoMedico> detalhar(@PathVariable Long id){
-        Medico medico = _medicoService.detalhar(id);
+        DadosDetalhamentoMedico medico = _medicoService.detalhar(id);
 
-        return ResponseEntity.ok(new DadosDetalhamentoMedico(medico));
+        return ResponseEntity.ok((medico));
     }
 
     @PutMapping
     public ResponseEntity<DadosDetalhamentoMedico> atualizar(@RequestBody @Valid DadosAtualizacaoMedico dados){
-        Medico medico = this._medicoService.atualizarInformacoes(dados);
+        DadosDetalhamentoMedico medico = this._medicoService.atualizarInformacoes(dados);
 
-        return ResponseEntity.ok(new DadosDetalhamentoMedico(medico));
+        return ResponseEntity.ok(medico);
     }
 
     @DeleteMapping("/{id}" )

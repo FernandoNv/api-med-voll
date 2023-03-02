@@ -15,16 +15,18 @@ public class MedicoService {
     }
 
     @Transactional
-    public Medico cadastrar(DadosCadastroMedico dados){
-        return this._medicoRepository.save(new Medico(dados));
+    public DadosDetalhamentoMedico cadastrar(DadosCadastroMedico dados){
+        Medico medico = this._medicoRepository.save(new Medico(dados));
+
+        return new DadosDetalhamentoMedico(medico);
     }
 
     @Transactional
-    public Medico atualizarInformacoes(DadosAtualizacaoMedico dados){
+    public DadosDetalhamentoMedico atualizarInformacoes(DadosAtualizacaoMedico dados){
         Medico medico = this._medicoRepository.getReferenceById(dados.id());
         medico.atualizarInformacoes(dados);
 
-        return medico;
+        return new DadosDetalhamentoMedico(medico);
     }
 
     public Page<DadosListagemMedico> listar(Pageable paginacao){
@@ -41,7 +43,9 @@ public class MedicoService {
         medico.deletar();
     }
 
-    public Medico detalhar(Long id){
-        return this._medicoRepository.getReferenceById(id);
+    public DadosDetalhamentoMedico detalhar(Long id){
+        Medico medico =  this._medicoRepository.getReferenceById(id);
+
+        return new DadosDetalhamentoMedico(medico);
     }
 }
