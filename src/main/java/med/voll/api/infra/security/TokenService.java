@@ -28,7 +28,6 @@ public class TokenService {
         } catch (JWTCreationException exception){
             throw new RuntimeException("erro ao gerrar token jwt", exception);
         }
-
     }
 
     public String getSubject(String tokenJWT) {

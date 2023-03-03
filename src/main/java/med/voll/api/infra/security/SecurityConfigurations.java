@@ -23,14 +23,11 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurations {
-
     private final SecurityFilter securityFilter;
-
     @Autowired
     public SecurityConfigurations(SecurityFilter securityFilter) {
         this.securityFilter = securityFilter;
     }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.csrf().disable()
