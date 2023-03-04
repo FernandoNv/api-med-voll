@@ -56,7 +56,9 @@ public class PessoaService {
                 dados.nome(),
                 dados.imagemUrl(),
                 dados.login(),
-                novaSenha
+                novaSenha,
+                dados.genero(),
+                dados.dataNascimento()
         );
 
         return novoDados;
