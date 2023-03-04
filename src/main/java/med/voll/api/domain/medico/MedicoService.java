@@ -34,13 +34,15 @@ public class MedicoService {
     }
 
     @Transactional
-    public void deletar(Long id) {
+    public DadosDetalhamentoMedico deletar(Long id) {
         // forma destrutiva
         // nao usar
         //this._medicoRepository.deleteById(id);
 
         Medico medico = _medicoRepository.getReferenceById(id);
         medico.deletar();
+
+        return new DadosDetalhamentoMedico(medico);
     }
 
     public DadosDetalhamentoMedico detalhar(Long id){
