@@ -50,4 +50,12 @@ public class MedicoService {
 
         return new DadosDetalhamentoMedico(medico);
     }
+
+    public Boolean crmMedicoJaCadastrado(String crm) {
+        return this._medicoRepository.existisByCrm(crm);
+    }
+
+    public Boolean emailMedicoJaCadastrado(String email) {
+        return this._medicoRepository.existisByEmail(email);
+    }
 }

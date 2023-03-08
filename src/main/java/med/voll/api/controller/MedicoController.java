@@ -19,10 +19,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/medicos")
@@ -51,6 +54,25 @@ public class MedicoController {
         Page<DadosListagemMedico> page = this._medicoService.listar(paginacao);
 
         return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/existe")
+    public ResponseEntity<Boolean> verificarExistencia(
+            @RequestParam(name = "tipo") Optional<String> tipoInformado,
+            @RequestParam(name = "email", required = false) Optional<String> emailInformado,
+            @RequestParam(name = "crm", required = false) Optional<String> crmInformado
+    ){
+        Boolean resultado = true;
+        String tipo = tipoInformado.orElseThrow();
+
+        if(Objects.equals(tipo, "email")){
+            resultado = _medicoService.emailMedicoJaCadastrado(emailInformado.orElseThrow());
+        }
+        if(Objects.equals(tipo, "crm")){
+            resultado = _medicoService.crmMedicoJaCadastrado(crmInformado.orElseThrow());
+        }
+
+        return ResponseEntity.ok(resultado);
     }
 
     @GetMapping("/{id}")

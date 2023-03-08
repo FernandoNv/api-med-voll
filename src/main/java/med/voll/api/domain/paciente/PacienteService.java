@@ -41,4 +41,12 @@ public class PacienteService {
     public Paciente detalhar(Long id) {
         return this._pacienteRepository.getReferenceById(id);
     }
+
+    public Boolean emailPacienteJaCadastrado(String email) {
+        return this._pacienteRepository.existsByEmail(email);
+    }
+
+    public Boolean cpfPacienteJaCadastrado(String cpf) {
+        return this._pacienteRepository.existisByCpf(cpf);
+    }
 }
