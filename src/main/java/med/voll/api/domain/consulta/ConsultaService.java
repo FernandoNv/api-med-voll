@@ -42,9 +42,7 @@ public class ConsultaService {
         if( dados.idMedico() != null && !_medicoRepository.existsById(dados.idMedico()))
             throw new ValidacaoException("Id do médico informado não existe");
 
-        for (ValidadorAgendamentoConsulta v : _validadoresConsulta) {
-            v.validar(dados);
-        }
+        _validadoresConsulta.forEach(v -> v.validar(dados));
 
         var medico = this.escolherMedico(dados);
         if(medico == null)
@@ -52,7 +50,7 @@ public class ConsultaService {
 
         var paciente = _pacienteRepository.getReferenceById(dados.idPaciente());
         var consulta = new Consulta(null, medico, paciente, dados.data(), null);
-        _consultaRepository.save(consulta);
+        consulta = _consultaRepository.save(consulta);
 
         return new DadosDetalhamentoConsulta(consulta);
     }
@@ -72,9 +70,7 @@ public class ConsultaService {
         if(!_consultaRepository.existsById(dados.idConsulta()))
             throw new ValidacaoException("Id da consulta inválido");
 
-        for (ValidadorCancelamentoConsulta v : _validadoresCancelamentoConsulta) {
-            v.validar(dados);
-        }
+        _validadoresCancelamentoConsulta.forEach(v -> v.validar(dados));
 
         var consulta = _consultaRepository.findById(dados.idConsulta()).get();
         consulta.cancelar(dados.motivoCancelamento());
