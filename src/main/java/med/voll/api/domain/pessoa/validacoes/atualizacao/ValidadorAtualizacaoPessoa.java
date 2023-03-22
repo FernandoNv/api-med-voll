@@ -1,4 +1,4 @@
-package med.voll.api.domain.pessoa.validacoes;
+package med.voll.api.domain.pessoa.validacoes.atualizacao;
 
 import med.voll.api.domain.pessoa.DadosAtualizacaoPessoa;
 

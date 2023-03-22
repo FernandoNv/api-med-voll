@@ -20,4 +20,11 @@ public class UsuarioService {
     public Usuario findByLogin(String login){
         return _usuarioRepository.getReferenceUsuarioByLogin(login);
     }
+    public Usuario novoUsuario(DadosCadastroUsuario dadosCadastroUsuario){
+        var usuario = new Usuario();
+        usuario.setLogin(dadosCadastroUsuario.login());
+        usuario.setSenha(encodePassword(dadosCadastroUsuario.senha()));
+
+        return usuario;
+    }
 }

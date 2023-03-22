@@ -1,4 +1,4 @@
-package med.voll.api.domain.pessoa.validacoes;
+package med.voll.api.domain.pessoa.validacoes.atualizacao;
 
 import med.voll.api.domain.ValidacaoException;
 import med.voll.api.domain.pessoa.DadosAtualizacaoPessoa;
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ValidadorAtualizacaoPessoaLoginUnico implements ValidadorAtualizacaoPessoa{
+public class ValidadorAtualizacaoPessoaLoginUnico implements ValidadorAtualizacaoPessoa {
     private final UsuarioRepository _usuarioRepository;
     @Autowired
     public ValidadorAtualizacaoPessoaLoginUnico(UsuarioRepository usuarioRepository) {

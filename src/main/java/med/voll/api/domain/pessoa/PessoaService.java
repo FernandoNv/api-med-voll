@@ -1,7 +1,8 @@
 package med.voll.api.domain.pessoa;
 
 import med.voll.api.domain.ValidacaoException;
-import med.voll.api.domain.pessoa.validacoes.ValidadorAtualizacaoPessoa;
+import med.voll.api.domain.pessoa.validacoes.atualizacao.ValidadorAtualizacaoPessoa;
+import med.voll.api.domain.pessoa.validacoes.cadastro.ValidadorCadastroPessoa;
 import med.voll.api.domain.usuario.Usuario;
 import med.voll.api.domain.usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,19 @@ public class PessoaService {
     private final PessoaRepository _pessoaRepository;
     private final UsuarioService _usuarioService;
     private final List<ValidadorAtualizacaoPessoa> _validadoresAtualizacaoPessoa;
+    private final List<ValidadorCadastroPessoa> _validadoresCadastroPessoa;
 
     @Autowired
-    public PessoaService(PessoaRepository pessoaRepository , UsuarioService usuarioService, List<ValidadorAtualizacaoPessoa> validadoresAtualizacaoPessoa) {
+    public PessoaService(
+            PessoaRepository pessoaRepository,
+            UsuarioService usuarioService,
+            List<ValidadorAtualizacaoPessoa> validadoresAtualizacaoPessoa,
+            List<ValidadorCadastroPessoa> validadoresCadastroPessoa
+    ) {
         _pessoaRepository = pessoaRepository;
         _usuarioService = usuarioService;
         _validadoresAtualizacaoPessoa = validadoresAtualizacaoPessoa;
+        _validadoresCadastroPessoa = validadoresCadastroPessoa;
     }
 
     public DadosDetalhamentoPessoa detalhar(String login){
@@ -28,6 +36,26 @@ public class PessoaService {
         Pessoa pessoa = _pessoaRepository.getReferenceById(usuario.getId());
 
         return new DadosDetalhamentoPessoa(pessoa);
+    }
+
+    public DadosDetalhamentoPessoa cadastrar(DadosCadastroPessoa dadosCadastroPessoa){
+        for(var validador: _validadoresCadastroPessoa){
+            validador.validar(dadosCadastroPessoa);
+        }
+
+        var usuario = _usuarioService.novoUsuario(dadosCadastroPessoa.dadosCadastroUsuario());
+        var pessoa = new Pessoa(
+                null,
+                dadosCadastroPessoa.nome(),
+                null,
+                usuario,
+                dadosCadastroPessoa.genero(),
+                dadosCadastroPessoa.dataNascimento()
+        );
+
+        var pessoaCadastrada = _pessoaRepository.save(pessoa);
+
+        return new DadosDetalhamentoPessoa(pessoaCadastrada);
     }
 
     @Transactional
@@ -51,7 +79,8 @@ public class PessoaService {
 
     private DadosAtualizacaoPessoa atualizarSenha(DadosAtualizacaoPessoa dados){
         var novaSenha = _usuarioService.encodePassword(dados.senha());
-        var novoDados = new DadosAtualizacaoPessoa(
+
+        return new DadosAtualizacaoPessoa(
                 dados.id(),
                 dados.nome(),
                 dados.imagemUrl(),
@@ -60,7 +89,5 @@ public class PessoaService {
                 dados.genero(),
                 dados.dataNascimento()
         );
-
-        return novoDados;
     }
 }
